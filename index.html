@@ -112,11 +112,16 @@
     <h1>Libro Interactivo</h1>
 
     <button onclick="iniciarHistoria(); reproducirMusica()">Iniciar Historia</button>
-    <button onclick="releerHistoria()">Releer Última Historia</button>
+<button onclick="releerHistoria()">Releer Última Historia</button>
+<button onclick="abrirMusica()">🎵 Música de fondo</button>
 
 </div>
 
 <script>
+
+function abrirMusica(){
+    window.open("https://www.youtube.com/watch?v=4Q0Un9PQ0wk", "_blank");
+}
 
 function releerHistoria() {
     let historia = sessionStorage.getItem("historia");
@@ -884,44 +889,141 @@ function encuesta(){
 // RESULTADO FINAL
 function resultado(valor){
 
-    let notaBase = 0;
     let explicacionRuta = "";
 
-    if(ruta === 1){
-        notaBase = 5.0;
-        explicacionRuta = "Tomaste decisiones reflexivas y coherentes con el contexto de la historia.";
+    // =========================
+    // PUNTAJE BASE EXIGENTE
+    // =========================
+    let puntaje = 0;
+
+    // MORAL (menos inflada, exige constancia)
+    puntaje += decisiones.moral * 1.0;
+
+    // REFLEXIÓN (clave real del pensamiento)
+    puntaje += decisiones.reflexion * 1.4;
+
+    // CONTROL (penalización fuerte)
+    puntaje -= decisiones.control * 1.5;
+
+
+    // =========================
+    // PENALIZACIÓN POR INCOHERENCIA
+    // =========================
+
+    let incoherencia = Math.abs(decisiones.moral - decisiones.control);
+
+    if(incoherencia <= 1){
+        puntaje -= 3; // totalmente contradictorio
     }
-    else if(ruta === 2){
-        notaBase = 4.0;
-        explicacionRuta = "Mostraste buena comprensión, aunque algunas decisiones fueron poco consistentes.";
-    }
-    else if(ruta === 3){
-        notaBase = 3.0;
-        explicacionRuta = "Tus decisiones muestran dudas y una comprensión parcial del conflicto.";
-    }
-    else if(ruta === 4){
-        notaBase = 2.0;
-        explicacionRuta = "Predominaron decisiones impulsivas o poco analizadas.";
-    }
-    else if(ruta === 5){
-        notaBase = 1.0;
-        explicacionRuta = "Las decisiones no reflejan comprensión del contexto narrativo.";
+    else if(incoherencia <= 3){
+        puntaje -= 1.5;
     }
 
-    let ajuste = valor / 5;
+    // Castigo adicional si no hay postura clara
+    if(decisiones.moral === 0 && decisiones.reflexion === 0){
+        puntaje -= 2;
+    }
+
+
+    // =========================
+    // COHERENCIA CON EL FINAL
+    // =========================
+
+    if(ruta === 1){ // LIBERADOR
+        if(decisiones.moral >= 4 && decisiones.control <= 1){
+            puntaje += 2;
+            explicacionRuta = "Tu camino fue coherente: actuaste con intención y consistencia moral.";
+        } else {
+            puntaje -= 2;
+            explicacionRuta = "Llegaste a un final moral, pero tus decisiones no fueron lo suficientemente coherentes.";
+        }
+    }
+
+    else if(ruta === 2){ // INTERMEDIO
+        if(decisiones.moral >= 2){
+            puntaje += 0.5;
+            explicacionRuta = "Intentaste actuar correctamente, pero con dudas o inconsistencias.";
+        } else {
+            puntaje -= 1;
+            explicacionRuta = "Tus decisiones no sostienen el resultado que alcanzaste.";
+        }
+    }
+
+    else if(ruta === 3){ // NEUTRAL
+        if(decisiones.reflexion >= 2){
+            puntaje += 0;
+            explicacionRuta = "Comprendiste el conflicto, pero evitaste actuar con claridad.";
+        } else {
+            puntaje -= 1.5;
+            explicacionRuta = "La neutralidad fue más pasividad que comprensión.";
+        }
+    }
+
+    else if(ruta === 4){ // HUIDA
+        puntaje -= 2.5;
+        explicacionRuta = "Evitaste el conflicto. No hay construcción de decisión real.";
+    }
+
+    else if(ruta === 5){ // SISTEMA
+        if(decisiones.control >= 3){
+            puntaje -= 1.5;
+            explicacionRuta = "Fuiste coherente, pero priorizaste el control sobre lo humano.";
+        } else {
+            puntaje -= 3;
+            explicacionRuta = "El resultado refleja incoherencia y falta de criterio claro.";
+        }
+    }
+
+
+    // =========================
+    // NORMALIZACIÓN MÁS DURA
+    // =========================
+
+    let notaBase = 2 + (puntaje / 5);
+
+    if(notaBase > 5) notaBase = 5;
+    if(notaBase < 1) notaBase = 1;
+
+
+    // =========================
+    // AUTOEVALUACIÓN (MENOR PESO)
+    // =========================
+
+    let ajuste = 0;
+
+    if(valor === 5){
+        ajuste = 0.2;
+    }
+    else if(valor === 3){
+        ajuste = 0;
+    }
+    else if(valor === 1){
+        ajuste = -0.4;
+    }
+
     let notaFinal = (notaBase + ajuste).toFixed(1);
+
+
+    // =========================
+    // EXPLICACIÓN DE ENCUESTA
+    // =========================
 
     let explicacionEncuesta = "";
 
     if(valor === 5){
-        explicacionEncuesta = "Reconoces tus decisiones con seguridad y reflexión.";
+        explicacionEncuesta = "Tu percepción es alta, pero la evaluación exige coherencia real en decisiones.";
     }
     else if(valor === 3){
-        explicacionEncuesta = "Tu percepción de tus decisiones es intermedia.";
+        explicacionEncuesta = "Tu autoevaluación es moderada, pero el sistema exige mayor claridad.";
     }
     else if(valor === 1){
-        explicacionEncuesta = "Muestras poca reflexión sobre tus decisiones.";
+        explicacionEncuesta = "Percibes fallas, lo cual coincide con una toma de decisiones débil.";
     }
+
+
+    // =========================
+    // RESULTADO FINAL
+    // =========================
 
     document.body.innerHTML = `
     <div style="background:white; color:black; height:100vh; display:flex; justify-content:space-between; align-items:center; padding:60px;">
@@ -930,12 +1032,25 @@ function resultado(valor){
             <h2>Evaluación</h2>
             <p><strong>Desempeño en la historia:</strong> ${explicacionRuta}</p>
             <p><strong>Reflexión del estudiante:</strong> ${explicacionEncuesta}</p>
-            <p>La calificación final resulta de la combinación de ambos criterios.</p>
+            <p><strong>Decisiones tomadas:</strong> Moral (${decisiones.moral}), Reflexión (${decisiones.reflexion}), Control (${decisiones.control})</p>
+            <p>La nota exige coherencia, constancia y criterio en la toma de decisiones.</p>
         </div>
 
-        <div style="font-size:80px; font-weight:bold;">
-            ${notaFinal}
-        </div>
+        <div style="display:flex; flex-direction:column; align-items:center;">
+
+    <div style="font-size:80px; font-weight:bold; margin-bottom:30px;">
+        ${notaFinal}
+    </div>
+
+    <button onclick="window.open('https://www.youtube.com/watch?v=lzDaBQP5V1o', '_blank')">
+        📖 Mejorar comprensión lectora
+    </button>
+
+    <button onclick="window.open('https://www.youtube.com/watch?v=ESJh-miB5j8', '_blank')">
+        🧠 Cómo tomar mejores decisiones
+    </button>
+
+</div>
 
     </div>
     `;
