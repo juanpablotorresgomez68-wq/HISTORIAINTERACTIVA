@@ -98,6 +98,10 @@
 
 <body>
 
+<audio id="bg-music" loop>
+    <source src="musica.mp3" type="audio/mpeg">
+</audio>
+
 <div class="portada">
 
     <div class="ornamento top-left"></div>
@@ -107,7 +111,7 @@
 
     <h1>Libro Interactivo</h1>
 
-    <button onclick="iniciarHistoria()">Iniciar Historia</button>
+    <button onclick="iniciarHistoria(); reproducirMusica()">Iniciar Historia</button>
     <button onclick="releerHistoria()">Releer Última Historia</button>
 
 </div>
@@ -935,6 +939,12 @@ function resultado(valor){
 
     </div>
     `;
+}
+
+function reproducirMusica() {
+    const audio = document.getElementById("bg-music");
+    audio.volume = 0.4; // volumen (0 a 1)
+    audio.play();
 }
 
 </script>
