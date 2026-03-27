@@ -139,41 +139,54 @@ let decisiones = {
 // ESCENAS
 const escenas = [
 
+/* 1 — OBSERVADOR */
 {
 texto:`Caía ceniza del cielo.
 
-Aren Delvar observaba desde la pasarela superior. No era la primera vez que veía un patio como ese. Producción estable. Ritmo constante. Orden.
+Aren Delvar observaba desde la pasarela superior.
 
-Abajo, los skaa trabajaban en silencio. No había gritos innecesarios. No había interrupciones. Solo eficiencia.
+El patio funcionaba.
 
-Un joven intentó levantar un saco. Falló.
+No perfecto. Nunca perfecto.
 
-El capataz se acercó.
+Pero sí lo suficiente.
+
+Los skaa trabajaban sin hablar. Sin detenerse. Sin mirar arriba.
+
+Un sistema estable no necesitaba ruido.
+
+Un joven falló al levantar un saco.
+
+El capataz avanzó.
 
 Aren no apartó la mirada.
 
-Era su función observar.`,
+No era indiferencia.
+
+Era función.`,
 opciones:[
-{texto:"Mantenerse como observador", cambio:0, tipo:"moral", valor:-1},
+{texto:"Mantenerse como observador", cambio:0, tipo:"control", valor:1},
 {texto:"Intervenir", cambio:1, tipo:"moral", valor:1}
 ]
 },
 
+/* 2 — PRIMER QUIEBRE */
 {
-texto: () => (ruta === 1 ? 
+texto: () => (ruta === 1 ?
+
 `El golpe llegó.
 
 El joven cayó.
 
 Aren no se movió.
 
-El sistema no se detenía por un individuo.
+No porque no pudiera.
 
-Registró el evento como cualquier otro: una variable mínima dentro de un sistema estable.
+Sino porque entendía.
 
-Nada se alteró.
+El sistema no se detenía por individuos.
 
-Nada debía hacerlo.`
+Alterarlo por uno… lo debilitaba todo.`
 
 :
 
@@ -181,225 +194,269 @@ Nada debía hacerlo.`
 
 El joven cayó.
 
-Aren dio un paso.
+Aren avanzó.
 
-No fue suficiente para detenerlo.
+No lo suficiente para detenerlo.
 
-Pero rompió el patrón.
+Pero sí para romper algo invisible.
 
-El capataz lo notó.
+El patrón.
 
-Por un instante, el orden del patio dejó de ser perfecto.
-
-Y eso… no era normal.`),
+Y eso… el sistema lo notó.`),
 
 opciones:[
-{texto:"Ignorar la sensación", cambio:0, tipo:"reflexion", valor:-1},
-{texto:"Prestarle atención", cambio:1, tipo:"reflexion", valor:1}
+{texto:"Aceptar el orden", cambio:0, tipo:"control", valor:1},
+{texto:"Cuestionarlo", cambio:1, tipo:"reflexion", valor:1}
 ]
 },
 
+/* 3 — PROCESAMIENTO */
 {
-texto: () => (ruta <= 1 ?
+texto: () => (decisiones.reflexion > 0 ?
 
 `El cuerpo fue retirado.
 
 Otro ocupó su lugar.
 
-El trabajo continuó.
+Todo continuó.
 
-Aren volvió a los números.
+Pero Aren no pudo ignorarlo.
 
-Producción. Rendimiento. Eficiencia.
+No el evento.
 
-Nada más importaba.
+El reemplazo.
 
-Nada debía importar.`
-
-:
-
-`El cuerpo fue retirado.
-
-Otro ocupó su lugar.
-
-Pero Aren no pudo apartar la mirada.
-
-El cambio había sido demasiado rápido.
+Demasiado rápido.
 
 Demasiado limpio.
 
 Como si nunca hubiera ocurrido.
 
-Y sin embargo… él lo había visto.`),
+Y sin embargo… él lo había visto.`
+
+:
+
+`El cuerpo fue retirado.
+
+Otro ocupó su lugar.
+
+El sistema se ajustó.
+
+Como siempre.
+
+Sin error.
+
+Sin retraso.
+
+Aren volvió a los números.
+
+Era suficiente.`),
 
 opciones:[
-{texto:"Reprimir el pensamiento", cambio:0, tipo:"reflexion", valor:-1},
-{texto:"Analizar lo ocurrido", cambio:1, tipo:"reflexion", valor:1}
+{texto:"Analizar lo ocurrido", cambio:1, tipo:"reflexion", valor:1},
+{texto:"Descartar la anomalía", cambio:0, tipo:"control", valor:1}
 ]
 },
 
+/* 4 — EL METAL */
 {
-texto: () => (ruta <= 2 ?
+texto: () => (decisiones.reflexion > 1 ?
+
+`Entonces lo sintió.
+
+No afuera.
+
+Dentro.
+
+Una constante.
+
+Silenciosa.
+
+Pero imposible de ignorar.
+
+No era emoción.
+
+No era error.
+
+Era percepción.`
+
+:
 
 `Entonces lo sintió.
 
 Algo.
 
-Pero lo ignoró.
+Irrelevante.
 
-No era útil.
+Innecesario.
 
-No era lógico.
+Una distracción.
 
-Y por eso… no existía.`
+Y como cualquier distracción…
+
+podía ser eliminada.`),
+
+opciones:[
+{texto:"Explorar la sensación", cambio:1, tipo:"reflexion", valor:1},
+{texto:"Reprimirla", cambio:0, tipo:"control", valor:1}
+]
+},
+
+/* 5 — PODER */
+{
+texto: () => (decisiones.control > 1 ?
+
+`El metal respondió.
+
+No completamente.
+
+Pero suficiente.
+
+Un leve movimiento.
+
+Una desviación mínima.
+
+No era imaginación.
+
+Era control.
+
+Y el control… era eficiencia.`
 
 :
 
-`Entonces lo sintió.
+`El metal estaba ahí.
 
-Metal.
+Presente.
 
-No fuera.
+Pero no sometido.
 
-Dentro.
-
-Una presencia.
-
-Difusa, pero real.
-
-Y esta vez…
-
-no pudo ignorarla.`),
-
-opciones:[
-{texto:"Resistirse", cambio:0, tipo:"control", valor:-1},
-{texto:"Usarlo", cambio:1, tipo:"control", valor:1}
-]
-},
-
-{
-texto:`El mundo cambió.
-
-Podía sentir el metal en todo: estructuras, armas, cuerpos.
-
-Los soldados se acercaron.
-
-El obligador habló.
-
-Aren ya no estaba escuchando.
-
-Solo percibiendo.
-
-Todo.`,
-opciones:[
-{texto:"Rendirse al control", cambio:0, tipo:"control", valor:1},
-{texto:"Escapar", cambio:1, tipo:"control", valor:-1}
-]
-},
-
-{
-texto:`El exterior no tenía orden.
-
-La bruma lo cubría todo.
-
-No había sistema.
-
-No había instrucciones.
-
-Solo decisiones.`,
-opciones:[
-{texto:"Seguir solo", cambio:0, tipo:"moral", valor:-1},
-{texto:"Buscar a otros", cambio:1, tipo:"moral", valor:1}
-]
-},
-
-{
-texto: () => (ruta <= 2 ?
-
-`Un hombre herido.
-
-Una niña.
-
-Aren no necesitó pensar demasiado.
-
-Se detuvo.
-
-No por duda.
-
-Por decisión.
-
-La situación era ineficiente.
-
-Pero ignorarla… ya no era posible.
-
-Se agachó.
-
-Evaluó la herida.
-
-Luego el entorno.
-
-Luego las posibles salidas.
-
-No era impulso.
-
-Era elección consciente.`
-
-:
-
-ruta === 3 ?
-
-`Un hombre herido.
-
-Una niña.
-
-Aren se detuvo.
-
-El cálculo no era claro.
-
-Ayudar implicaba riesgo.
-
-Ignorar implicaba… algo más.
-
-No actuó de inmediato.
+Aren no lo forzó.
 
 Observó.
 
 Midió.
 
-Dudó.
+Esperó.`),
 
-El tiempo pasaba.
+opciones:[
+{texto:"Dominarlo", cambio:1, tipo:"control", valor:1},
+{texto:"Comprenderlo", cambio:0, tipo:"reflexion", valor:1}
+]
+},
 
-Y con él… la oportunidad.`
+/* 6 — SALIDA */
+{
+texto:`El exterior no tenía estructura.
+
+No órdenes.
+
+No supervisión.
+
+Solo espacio.
+
+Y con él…
+
+decisión.`,
+
+opciones:[
+{texto:"Alejarse de todo", cambio:0, tipo:"moral", valor:-1},
+{texto:"Buscar a alguien", cambio:1, tipo:"moral", valor:1}
+]
+},
+
+/* 7 — ENCUENTRO */
+{
+texto: () => (decisiones.moral > 0 ?
+
+`Un hombre herido.
+
+Una niña a su lado.
+
+No gritaba.
+
+No pedía ayuda.
+
+Solo observaba.
+
+Como si supiera que la decisión no era sobre ellos.
+
+Sino sobre él.`
 
 :
 
 `Un hombre herido.
 
-Una niña.
+Una niña temblando.
 
-Aren los vio.
+Situación clara.
 
-Y siguió de largo.
+Riesgo medible.
 
-No porque no entendiera la situación.
-
-Sino porque sí lo hacía.
-
-No eran relevantes.
-
-No para su objetivo.
-
-No para su supervivencia.`),
+Resultado predecible.`),
 
 opciones:[
-{texto:"Ignorarlos", cambio:0, tipo:"moral", valor:-1},
+{texto:"Ignorarlos", cambio:0, tipo:"control", valor:1},
 {texto:"Ayudarlos", cambio:1, tipo:"moral", valor:1}
 ]
 },
 
+/* 8 — INTERACCIÓN */
 {
-texto: () => (ruta <= 2 ?
+texto: () => (decisiones.moral > 1 ?
+
+`La niña habló.
+
+"Si te quedas, vendrán."
+
+No había miedo en su voz.
+
+Solo certeza.
+
+Aren entendió:
+
+No necesitaban salvación.
+
+Necesitaban tiempo.`
+
+:
+
+decisiones.control > 2 ?
+
+`Aren no habló.
+
+No era necesario.
+
+Evaluó la herida.
+
+Evaluó el entorno.
+
+Actuó.
+
+Preciso.
+
+Eficiente.
+
+Sin exceso.`
+
+:
+
+`El silencio se extendió.
+
+Nadie tomó control.
+
+La situación permanecía abierta.
+
+Y eso… era peligroso.`),
+
+opciones:[
+{texto:"Protegerlos", cambio:1, tipo:"moral", valor:1},
+{texto:"Optimizar la situación", cambio:0, tipo:"control", valor:1}
+]
+},
+
+/* 9 — SOLDADOS */
+{
+texto: () => (decisiones.moral > 1 ?
 
 `Pasos.
 
@@ -409,21 +466,13 @@ Cerca.
 
 Aren no retrocedió.
 
-Ya había tomado una decisión antes.
+No porque creyera ganar.
 
-Y esta… era solo la consecuencia.
-
-Se posicionó.
-
-No para luchar sin sentido.
-
-Sino para ganar tiempo.
-
-El suficiente.`
+Sino porque ya había decidido no apartarse.`
 
 :
 
-ruta === 3 ?
+decisiones.reflexion > 2 ?
 
 `Pasos.
 
@@ -431,17 +480,11 @@ Soldados.
 
 Cerca.
 
-Aren tensó el cuerpo.
+Aren dudó.
 
-No estaba preparado.
+Cada opción tenía coste.
 
-No del todo.
-
-Había esperado demasiado.
-
-Ahora debía decidir rápido.
-
-Demasiado rápido.`
+Y ninguna era correcta.`
 
 :
 
@@ -453,107 +496,80 @@ Cerca.
 
 Aren evaluó.
 
-Distancia.
+Resultado: conflicto innecesario.
 
-Riesgo.
-
-Salida.
-
-No había necesidad de enfrentarlos.
-
-No había razón para quedarse.
-
-Solo una decisión lógica.`),
+Solución: evitarlo.`),
 
 opciones:[
-{texto:"Huir", cambio:0, tipo:"control", valor:-1},
-{texto:"Enfrentar", cambio:1, tipo:"control", valor:1}
+{texto:"Enfrentarlos", cambio:1, tipo:"moral", valor:1},
+{texto:"Retirarse", cambio:0, tipo:"control", valor:1}
 ]
 },
 
+/* 10 — DECISIÓN FINAL */
 {
-texto: () => (ruta <= 2 ?
+texto: () => (decisiones.moral > 2 ?
 
 `Podía irse.
 
-Dejarlo atrás.
+Pero ya había intervenido.
 
-Pero ahora entendía el sistema.
+Ignorar ahora…
 
-No como estructura.
+no era neutralidad.
 
-Como consecuencia.
-
-Si se iba… todo seguiría igual.
-
-Si volvía… podía cambiar algo.
-
-No todo.
-
-Pero algo era suficiente.`
+Era contradicción.`
 
 :
 
-ruta === 3 ?
+decisiones.reflexion > 2 ?
 
-`Podía irse.
+`Podía actuar.
 
-O podía volver.
+O no.
 
 Ambas opciones eran válidas.
 
-Ambas tenían coste.
+Ambas incompletas.
 
-Aren no estaba seguro.
-
-Nunca lo había estado.
-
-Pero ahora… tenía que elegir.`
+Y eso… lo detenía.`
 
 :
 
 `Podía irse.
 
-Y no volver.
+Sin consecuencias.
 
-El sistema seguiría funcionando.
+Sin carga.
 
-Como siempre.
+El sistema seguiría.
 
-Sin interrupciones.
-
-Sin fallos.
-
-Y esta vez…
-
-eso no le molestaba.`),
+Como siempre.`),
 
 opciones:[
-{texto:"Irse definitivamente", cambio:0, tipo:"moral", valor:-1},
-{texto:"Regresar al complejo", cambio:1, tipo:"moral", valor:1}
+{texto:"Regresar al complejo", cambio:1, tipo:"moral", valor:1},
+{texto:"Irse definitivamente", cambio:0, tipo:"control", valor:1}
 ]
 },
 
+/* 11 — ÚLTIMA ESCENA */
 {
-texto:`El patio seguía igual.
+texto:`El patio seguía funcionando.
 
-Pero él no.
+Como siempre.
 
 Los skaa trabajaban.
 
-Como siempre.
+El sistema persistía.
 
-Esperando órdenes.
-
-Esperando nada.`,
+Pero Aren… ya no era el mismo.`,
 opciones:[
-{texto:"No intervenir", cambio:0, tipo:"moral", valor:-1},
-{texto:"Liberarlos", cambio:1, tipo:"moral", valor:1}
+{texto:"Liberarlos", cambio:1, tipo:"moral", valor:1},
+{texto:"No intervenir", cambio:0, tipo:"control", valor:1}
 ]
-},
+}
 
 ];
-
 // INICIAR HISTORIA (REEMPLAZA LA FUNCIÓN QUE YA TENÍAS)
 function iniciarHistoria() {
 
