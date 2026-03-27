@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Libro Interactivo</title>
+
+<style>
+    body {
+        margin: 0;
+        font-family: "Garamond", "Times New Roman", serif;
+        background: #1c2b36;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: #f5e6c8;
+    }
+
+    .portada {
+        width: 80%;
+        max-width: 850px;
+        height: 90vh;
+        background: linear-gradient(180deg, #2c4a5f, #1c2b36);
+        border: 6px solid #caa85a;
+        border-radius: 15px;
+        position: relative;
+        box-shadow: 0 0 20px rgba(0,0,0,0.8);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+    }
+
+    /* Ornamentos tipo libro */
+    .ornamento {
+        position: absolute;
+        width: 120px;
+        height: 120px;
+        border: 4px solid #caa85a;
+    }
+
+    .top-left {
+        top: 10px;
+        left: 10px;
+        border-right: none;
+        border-bottom: none;
+    }
+
+    .top-right {
+        top: 10px;
+        right: 10px;
+        border-left: none;
+        border-bottom: none;
+    }
+
+    .bottom-left {
+        bottom: 10px;
+        left: 10px;
+        border-right: none;
+        border-top: none;
+    }
+
+    .bottom-right {
+        bottom: 10px;
+        right: 10px;
+        border-left: none;
+        border-top: none;
+    }
+
+    h1 {
+        font-size: 3em;
+        margin-bottom: 40px;
+        color: #e6c77b;
+        text-align: center;
+        letter-spacing: 2px;
+    }
+
+    button {
+        background: transparent;
+        border: 2px solid #caa85a;
+        color: #f5e6c8;
+        padding: 15px 30px;
+        margin: 10px;
+        font-size: 1.1em;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: 0.3s;
+    }
+
+    button:hover {
+        background: #caa85a;
+        color: #1c2b36;
+    }
+
+</style>
+</head>
+
+<body>
+
+<div class="portada">
+
+    <div class="ornamento top-left"></div>
+    <div class="ornamento top-right"></div>
+    <div class="ornamento bottom-left"></div>
+    <div class="ornamento bottom-right"></div>
+
+    <h1>Libro Interactivo</h1>
+
+    <button onclick="iniciarHistoria()">Iniciar Historia</button>
+    <button onclick="releerHistoria()">Releer Última Historia</button>
+
+</div>
+
+<script>
+
+function releerHistoria() {
+    let historia = sessionStorage.getItem("historia");
+
+    if (!historia) {
+        alert("No hay una historia previa en esta sesión.");
+        return;
+    }
+
+    sessionStorage.setItem("modo", "relectura");
+    iniciarHistoria();
+}
+
+// VARIABLES GENERALES
+let escena = 0;
+let ruta = 1;
+let historiaTexto = "";
+let decisiones = {
+    moral: 0,
+    control: 0,
+    reflexion: 0
+};
+
+// ESCENAS
+const escenas = [
+
+{
+texto:`Caía ceniza del cielo.
+
+Aren Delvar observaba desde la pasarela superior. No era la primera vez que veía un patio como ese. Producción estable. Ritmo constante. Orden.
+
+Abajo, los skaa trabajaban en silencio. No había gritos innecesarios. No había interrupciones. Solo eficiencia.
+
+Un joven intentó levantar un saco. Falló.
+
+El capataz se acercó.
+
+Aren no apartó la mirada.
+
+Era su función observar.`,
+opciones:[
+{texto:"Mantenerse como observador", cambio:0, tipo:"moral", valor:-1},
+{texto:"Intervenir", cambio:1, tipo:"moral", valor:1}
+]
+},
+
+{
+texto: () => (ruta === 1 ? 
+`El golpe llegó.
+
+El joven cayó.
+
+Aren no se movió.
+
+El sistema no se detenía por un individuo.
+
+Registró el evento como cualquier otro: una variable mínima dentro de un sistema estable.
+
+Nada se alteró.
+
+Nada debía hacerlo.`
+
+:
+
+`El golpe llegó.
+
+El joven cayó.
+
+Aren dio un paso.
+
+No fue suficiente para detenerlo.
+
+Pero rompió el patrón.
+
+El capataz lo notó.
+
+Por un instante, el orden del patio dejó de ser perfecto.
+
+Y eso… no era normal.`),
+
+opciones:[
+{texto:"Ignorar la sensación", cambio:0, tipo:"reflexion", valor:-1},
+{texto:"Prestarle atención", cambio:1, tipo:"reflexion", valor:1}
+]
+},
+
+{
+texto: () => (ruta <= 1 ?
+
+`El cuerpo fue retirado.
+
+Otro ocupó su lugar.
+
+El trabajo continuó.
+
+Aren volvió a los números.
+
+Producción. Rendimiento. Eficiencia.
+
+Nada más importaba.
+
+Nada debía importar.`
+
+:
+
+`El cuerpo fue retirado.
+
+Otro ocupó su lugar.
+
+Pero Aren no pudo apartar la mirada.
+
+El cambio había sido demasiado rápido.
+
+Demasiado limpio.
+
+Como si nunca hubiera ocurrido.
+
+Y sin embargo… él lo había visto.`),
+
+opciones:[
+{texto:"Reprimir el pensamiento", cambio:0, tipo:"reflexion", valor:-1},
+{texto:"Analizar lo ocurrido", cambio:1, tipo:"reflexion", valor:1}
+]
+},
+
+{
+texto: () => (ruta <= 2 ?
+
+`Entonces lo sintió.
+
+Algo.
+
+Pero lo ignoró.
+
+No era útil.
+
+No era lógico.
+
+Y por eso… no existía.`
+
+:
+
+`Entonces lo sintió.
+
+Metal.
+
+No fuera.
+
+Dentro.
+
+Una presencia.
+
+Difusa, pero real.
+
+Y esta vez…
+
+no pudo ignorarla.`),
+
+opciones:[
+{texto:"Resistirse", cambio:0, tipo:"control", valor:-1},
+{texto:"Usarlo", cambio:1, tipo:"control", valor:1}
+]
+},
+
+{
+texto:`El mundo cambió.
+
+Podía sentir el metal en todo: estructuras, armas, cuerpos.
+
+Los soldados se acercaron.
+
+El obligador habló.
+
+Aren ya no estaba escuchando.
+
+Solo percibiendo.
+
+Todo.`,
+opciones:[
+{texto:"Rendirse al control", cambio:0, tipo:"control", valor:1},
+{texto:"Escapar", cambio:1, tipo:"control", valor:-1}
+]
+},
+
+{
+texto:`El exterior no tenía orden.
+
+La bruma lo cubría todo.
+
+No había sistema.
+
+No había instrucciones.
+
+Solo decisiones.`,
+opciones:[
+{texto:"Seguir solo", cambio:0, tipo:"moral", valor:-1},
+{texto:"Buscar a otros", cambio:1, tipo:"moral", valor:1}
+]
+},
+
+{
+texto: () => (ruta <= 2 ?
+
+`Un hombre herido.
+
+Una niña.
+
+Aren no necesitó pensar demasiado.
+
+Se detuvo.
+
+No por duda.
+
+Por decisión.
+
+La situación era ineficiente.
+
+Pero ignorarla… ya no era posible.
+
+Se agachó.
+
+Evaluó la herida.
+
+Luego el entorno.
+
+Luego las posibles salidas.
+
+No era impulso.
+
+Era elección consciente.`
+
+:
+
+ruta === 3 ?
+
+`Un hombre herido.
+
+Una niña.
+
+Aren se detuvo.
+
+El cálculo no era claro.
+
+Ayudar implicaba riesgo.
+
+Ignorar implicaba… algo más.
+
+No actuó de inmediato.
+
+Observó.
+
+Midió.
+
+Dudó.
+
+El tiempo pasaba.
+
+Y con él… la oportunidad.`
+
+:
+
+`Un hombre herido.
+
+Una niña.
+
+Aren los vio.
+
+Y siguió de largo.
+
+No porque no entendiera la situación.
+
+Sino porque sí lo hacía.
+
+No eran relevantes.
+
+No para su objetivo.
+
+No para su supervivencia.`),
+
+opciones:[
+{texto:"Ignorarlos", cambio:0, tipo:"moral", valor:-1},
+{texto:"Ayudarlos", cambio:1, tipo:"moral", valor:1}
+]
+},
+
+{
+texto: () => (ruta <= 2 ?
+
+`Pasos.
+
+Soldados.
+
+Cerca.
+
+Aren no retrocedió.
+
+Ya había tomado una decisión antes.
+
+Y esta… era solo la consecuencia.
+
+Se posicionó.
+
+No para luchar sin sentido.
+
+Sino para ganar tiempo.
+
+El suficiente.`
+
+:
+
+ruta === 3 ?
+
+`Pasos.
+
+Soldados.
+
+Cerca.
+
+Aren tensó el cuerpo.
+
+No estaba preparado.
+
+No del todo.
+
+Había esperado demasiado.
+
+Ahora debía decidir rápido.
+
+Demasiado rápido.`
+
+:
+
+`Pasos.
+
+Soldados.
+
+Cerca.
+
+Aren evaluó.
+
+Distancia.
+
+Riesgo.
+
+Salida.
+
+No había necesidad de enfrentarlos.
+
+No había razón para quedarse.
+
+Solo una decisión lógica.`),
+
+opciones:[
+{texto:"Huir", cambio:0, tipo:"control", valor:-1},
+{texto:"Enfrentar", cambio:1, tipo:"control", valor:1}
+]
+},
+
+{
+texto: () => (ruta <= 2 ?
+
+`Podía irse.
+
+Dejarlo atrás.
+
+Pero ahora entendía el sistema.
+
+No como estructura.
+
+Como consecuencia.
+
+Si se iba… todo seguiría igual.
+
+Si volvía… podía cambiar algo.
+
+No todo.
+
+Pero algo era suficiente.`
+
+:
+
+ruta === 3 ?
+
+`Podía irse.
+
+O podía volver.
+
+Ambas opciones eran válidas.
+
+Ambas tenían coste.
+
+Aren no estaba seguro.
+
+Nunca lo había estado.
+
+Pero ahora… tenía que elegir.`
+
+:
+
+`Podía irse.
+
+Y no volver.
+
+El sistema seguiría funcionando.
+
+Como siempre.
+
+Sin interrupciones.
+
+Sin fallos.
+
+Y esta vez…
+
+eso no le molestaba.`),
+
+opciones:[
+{texto:"Irse definitivamente", cambio:0, tipo:"moral", valor:-1},
+{texto:"Regresar al complejo", cambio:1, tipo:"moral", valor:1}
+]
+},
+
+{
+texto:`El patio seguía igual.
+
+Pero él no.
+
+Los skaa trabajaban.
+
+Como siempre.
+
+Esperando órdenes.
+
+Esperando nada.`,
+opciones:[
+{texto:"No intervenir", cambio:0, tipo:"moral", valor:-1},
+{texto:"Liberarlos", cambio:1, tipo:"moral", valor:1}
+]
+},
+
+];
+
+// INICIAR HISTORIA (REEMPLAZA LA FUNCIÓN QUE YA TENÍAS)
+function iniciarHistoria() {
+
+let modo = sessionStorage.getItem("modo");
+
+// REINICIAR ESTADO
+escena = 0;
+ruta = 1;
+historiaTexto = "";
+
+decisiones = {
+    moral: 0,
+    control: 0,
+    reflexion: 0
+};
+
+    // BORRAR PORTADA
+    document.body.innerHTML = `
+    <div class="portada">
+        <div id="texto"></div>
+        <div id="opciones"></div>
+    </div>
+    `;
+
+    // SI ES RELECTURA
+    if(modo === "relectura"){
+
+        let historiaGuardada = sessionStorage.getItem("historia");
+
+        document.getElementById("texto").innerHTML = historiaGuardada.replace(/\n/g, "<br>");
+
+        document.getElementById("opciones").innerHTML = `
+            <button onclick="location.reload()">Volver al inicio</button>
+        `;
+
+        sessionStorage.removeItem("modo");
+        return;
+    }
+
+    mostrarEscena();
+}
+
+// MOSTRAR ESCENA
+function mostrarEscena(){
+
+    if(escena >= escenas.length){
+        mostrarFinal();
+        return;
+    }
+
+    let actual = escenas[escena];
+
+    let texto = typeof actual.texto === "function" ? actual.texto() : actual.texto;
+document.getElementById("texto").innerHTML = texto.replace(/\n/g, "<br>");
+
+    let botones = "";
+
+    actual.opciones.forEach(op=>{
+        botones += `<button onclick="elegir(${op.cambio}, '${op.tipo}', ${op.valor})">${op.texto}</button>`;
+    });
+
+    document.getElementById("opciones").innerHTML = botones;
+}
+
+// ELECCIÓN
+function elegir(cambio, tipo, valor){
+
+    let textoActual = typeof escenas[escena].texto === "function"
+    ? escenas[escena].texto()
+    : escenas[escena].texto;
+
+historiaTexto += textoActual + "\n";
+historiaTexto += "→ Decisión: " + 
+    escenas[escena].opciones.find(op => op.valor === valor).texto + "\n\n";
+
+    // Guardar decisiones profundas
+    if(tipo && decisiones[tipo] !== undefined){
+        decisiones[tipo] += valor;
+    }
+
+    // Mantener sistema base
+    ruta += cambio === 1 ? 1 : -1;
+
+if(ruta < 1) ruta = 1;
+if(ruta > 5) ruta = 5;
+
+    escena++;
+    mostrarEscena();
+}
+
+// FINAL
+function mostrarFinal(){
+
+    let textoFinal = "";
+// DECISIÓN FINAL REAL (REEMPLAZA EL SISTEMA ANTIGUO)
+if(decisiones.moral >= 3 && decisiones.control <= 0){
+    ruta = 1; // Liberador
+}
+else if(decisiones.moral >= 1){
+    ruta = 2; // Ayuda parcial
+}
+else if(decisiones.reflexion >= 2){
+    ruta = 3; // Neutral consciente
+}
+else if(decisiones.control >= 2){
+    ruta = 5; // Sistema / dominador
+}
+else{
+    ruta = 4; // Huida
+}
+
+    // FINAL 1 — LIBERADOR
+    if(ruta === 1){
+        textoFinal = `
+        Aren no dudó.
+
+        El sistema ya no era invisible para él.
+
+        Lo entendía.
+
+        Y precisamente por eso… decidió romperlo.
+
+        No con caos.
+
+        Con intención.
+
+        Cada empuje abría espacio.
+
+        Cada movimiento deshacía control.
+
+        Los skaa no recibieron una orden.
+
+        Recibieron una oportunidad.
+
+        Y la tomaron.
+
+        Cuando el patio quedó vacío, Aren no se quedó.
+
+        No era un líder.
+
+        No era un salvador.
+
+        Pero había cambiado algo.
+
+        Y eso… ya no podía deshacerse.
+        `;
+    }
+
+    // FINAL 2 — AYUDA INCOMPLETA
+    else if(ruta === 2){
+        textoFinal = `
+        Aren actuó.
+
+        No por convicción absoluta.
+
+        Pero tampoco por indiferencia.
+
+        Ayudó.
+
+        Lo suficiente para romper el momento.
+
+        No lo suficiente para cambiarlo todo.
+
+        Algunos escaparon.
+
+        Otros no.
+
+        El sistema se fracturó… pero no cayó.
+
+        Cuando se alejó, no miró atrás.
+
+        No porque no importara.
+
+        Sino porque no sabía si había hecho lo correcto.
+
+        Y esa duda… permaneció.
+        `;
+    }
+
+    // FINAL 3 — NEUTRO
+    else if(ruta === 3){
+        textoFinal = `
+        Aren se detuvo.
+
+        El conflicto seguía ahí.
+
+        Visible.
+
+        Innegable.
+
+        Pero no actuó.
+
+        No completamente.
+
+        No lo suficiente.
+
+        El sistema continuó.
+
+        Como siempre.
+
+        Ajustándose.
+
+        Absorbiendo cualquier variación.
+
+        Aren se alejó.
+
+        Con la certeza de que había visto algo importante.
+
+        Y la realidad de no haber hecho nada con ello.
+        `;
+    }
+
+    // FINAL 4 — HUIDA
+    else if(ruta === 4){
+        textoFinal = `
+        Aren eligió irse.
+
+        No mirar atrás.
+
+        No intervenir.
+
+        No involucrarse.
+
+        El sistema siguió funcionando.
+
+        Como si nunca hubiera estado ahí.
+
+        Como si nada hubiera cambiado.
+
+        Y en cierto modo…
+
+        nada lo hizo.
+
+        La bruma lo envolvió.
+
+        Y con el tiempo, incluso el recuerdo perdió forma.
+
+        No por falta de importancia.
+
+        Sino por falta de acción.
+        `;
+    }
+
+    // FINAL 5 — CAÍDA / SISTEMA
+    else if(ruta === 5){
+        textoFinal = `
+        Aren entendió el sistema.
+
+        Y en lugar de romperlo…
+
+        lo optimizó.
+
+        El poder no lo liberó.
+
+        Lo hizo más eficiente.
+
+        Más preciso.
+
+        Más frío.
+
+        Los errores desaparecieron.
+
+        Las fallas se corrigieron.
+
+        La producción aumentó.
+
+        Y el patio…
+
+        nunca volvió a detenerse.
+
+        Esta vez, bajo su control.
+
+        Perfecto.
+
+        Implacable.
+
+        Irrompible.
+        `;
+    }
+
+    // GUARDAR HISTORIA
+    sessionStorage.setItem("historia", historiaTexto + "\n\n--- FINAL ---\n" + textoFinal);
+    sessionStorage.setItem("ruta", ruta);
+
+    document.getElementById("texto").innerHTML = `
+        <h2>Final</h2>
+        <p>${textoFinal.replace(/\n/g, "<br>")}</p>
+        <button onclick="encuesta()">Ir a encuesta</button>
+    `;
+
+    document.getElementById("opciones").innerHTML = "";
+}
+
+// ENCUESTA
+function encuesta(){
+
+    document.body.innerHTML = `
+    <div class="portada">
+        <h2>Encuesta</h2>
+        <p>¿Cómo evalúas tus decisiones?</p>
+        <button onclick="resultado(5)">Muy bien</button>
+        <button onclick="resultado(3)">Regular</button>
+        <button onclick="resultado(1)">Mal</button>
+    </div>
+    `;
+}
+
+// RESULTADO FINAL
+function resultado(valor){
+
+    let notaBase = 0;
+    let explicacionRuta = "";
+
+    if(ruta === 1){
+        notaBase = 5.0;
+        explicacionRuta = "Tomaste decisiones reflexivas y coherentes con el contexto de la historia.";
+    }
+    else if(ruta === 2){
+        notaBase = 4.0;
+        explicacionRuta = "Mostraste buena comprensión, aunque algunas decisiones fueron poco consistentes.";
+    }
+    else if(ruta === 3){
+        notaBase = 3.0;
+        explicacionRuta = "Tus decisiones muestran dudas y una comprensión parcial del conflicto.";
+    }
+    else if(ruta === 4){
+        notaBase = 2.0;
+        explicacionRuta = "Predominaron decisiones impulsivas o poco analizadas.";
+    }
+    else if(ruta === 5){
+        notaBase = 1.0;
+        explicacionRuta = "Las decisiones no reflejan comprensión del contexto narrativo.";
+    }
+
+    let ajuste = valor / 5;
+    let notaFinal = (notaBase + ajuste).toFixed(1);
+
+    let explicacionEncuesta = "";
+
+    if(valor === 5){
+        explicacionEncuesta = "Reconoces tus decisiones con seguridad y reflexión.";
+    }
+    else if(valor === 3){
+        explicacionEncuesta = "Tu percepción de tus decisiones es intermedia.";
+    }
+    else if(valor === 1){
+        explicacionEncuesta = "Muestras poca reflexión sobre tus decisiones.";
+    }
+
+    document.body.innerHTML = `
+    <div style="background:white; color:black; height:100vh; display:flex; justify-content:space-between; align-items:center; padding:60px;">
+
+        <div style="max-width:500px;">
+            <h2>Evaluación</h2>
+            <p><strong>Desempeño en la historia:</strong> ${explicacionRuta}</p>
+            <p><strong>Reflexión del estudiante:</strong> ${explicacionEncuesta}</p>
+            <p>La calificación final resulta de la combinación de ambos criterios.</p>
+        </div>
+
+        <div style="font-size:80px; font-weight:bold;">
+            ${notaFinal}
+        </div>
+
+    </div>
+    `;
+}
+
+</script>
+
+</body>
+</html>
